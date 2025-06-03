@@ -10,6 +10,7 @@ The goal is to check whether it's possible to access all boxes
 using the keys contained within the boxes.
 """
 
+
 def canUnlockAll(boxes):
     """
     Determines if all the boxes can be opened.
