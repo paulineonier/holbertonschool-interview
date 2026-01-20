@@ -1,20 +1,26 @@
 #include <stdlib.h>
 #include "binary_trees.h"
 
-/* Structure simple de file (queue) */
+/**
+ * struct queue_s - file pour parcours en largeur
+ * @node: nœud du heap
+ * @next: pointeur vers le suivant
+ */
 typedef struct queue_s
 {
 	heap_t *node;
 	struct queue_s *next;
 } queue_t;
 
-/* Ajoute un nœud à la file */
-void enqueue(queue_t **head, heap_t *node)
+/* Ajoute un élément à la file */
+static void enqueue(queue_t **head, heap_t *node)
 {
 	queue_t *new = malloc(sizeof(queue_t));
+	queue_t *tmp;
 
 	if (!new)
 		return;
+
 	new->node = node;
 	new->next = NULL;
 
@@ -24,13 +30,14 @@ void enqueue(queue_t **head, heap_t *node)
 		return;
 	}
 
-	while ((*head)->next)
-		head = &(*head)->next;
-	(*head)->next = new;
+	tmp = *head;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }
 
-/* Retire un nœud de la file */
-heap_t *dequeue(queue_t **head)
+/* Retire un élément de la file */
+static heap_t *dequeue(queue_t **head)
 {
 	queue_t *tmp;
 	heap_t *node;
@@ -42,11 +49,12 @@ heap_t *dequeue(queue_t **head)
 	node = tmp->node;
 	*head = tmp->next;
 	free(tmp);
+
 	return (node);
 }
 
 /* Trouve le premier parent incomplet */
-heap_t *find_parent(heap_t *root)
+static heap_t *find_parent(heap_t *root)
 {
 	queue_t *queue = NULL;
 	heap_t *current;
@@ -66,8 +74,8 @@ heap_t *find_parent(heap_t *root)
 	return (NULL);
 }
 
-/* Remonte la valeur pour respecter le Max Heap */
-void heapify_up(heap_t *node)
+/* Remonte le nœud et retourne celui qui contient la valeur insérée */
+static heap_t *heapify_up(heap_t *node)
 {
 	int tmp;
 
@@ -78,15 +86,15 @@ void heapify_up(heap_t *node)
 		node->parent->n = tmp;
 		node = node->parent;
 	}
+	return (node);
 }
 
 /**
  * heap_insert - Insère une valeur dans un Max Binary Heap
+ * @root: double pointeur vers la racine
+ * @value: valeur à insérer
  *
- * @root: Double pointeur vers la racine
- * @value: Valeur à insérer
- *
- * Return: Pointeur vers le nœud inséré ou NULL
+ * Return: pointeur vers le nœud contenant la valeur insérée
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
@@ -114,7 +122,5 @@ heap_t *heap_insert(heap_t **root, int value)
 	else
 		parent->right = new_node;
 
-	heapify_up(new_node);
-
-	return (new_node);
+	return (heapify_up(new_node));
 }
