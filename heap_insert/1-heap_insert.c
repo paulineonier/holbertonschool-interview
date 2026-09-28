@@ -2,17 +2,6 @@
 #include "binary_trees.h"
 
 /**
- * struct queue_s - Structure de file d'attente pour le parcours en largeur
- * @node: Pointeur vers le nœud du heap
- * @next: Pointeur vers le nœud suivant de la file
- */
-typedef struct queue_s
-{
-	heap_t *node;
-	struct queue_s *next;
-} queue_t;
-
-/**
  * enqueue - Ajoute un nœud à la file
  * @head: Double pointeur vers la tête de file
  * @node: Nœud à ajouter
@@ -130,7 +119,7 @@ static heap_t *heapify_up(heap_t *node)
 }
 
 /**
- * heap_insert - Insère une valeur dans Max Binary Heap
+ * heap_insert - Insère une valeur dans un Max Binary Heap
  * @root: Double pointeur vers la racine du heap
  * @value: Valeur à stocker dans le nœud
  *

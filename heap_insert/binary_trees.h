@@ -29,3 +29,14 @@ heap_t *heap_insert(heap_t **root, int value);
 void binary_tree_print(const binary_tree_t *tree);
 
 #endif /* _BINARY_TREES_H_ */
+
+/**
+ * struct queue_s - Structure de file d'attente pour parcours en largeur
+ * @node: Pointeur vers le nœud du tas
+ * @next: Pointeur vers le nœud suivant
+ */
+typedef struct queue_s
+{
+	heap_t *node;
+	struct queue_s *next;
+} queue_t;
