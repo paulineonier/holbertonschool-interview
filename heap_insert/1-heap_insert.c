@@ -1,127 +1,166 @@
 #include <stdlib.h>
 #include "binary_trees.h"
 
+/**
+ * struct queue_s - Structure de file d'attente pour le parcours en largeur
+ * @node: Pointeur vers le nœud du heap
+ * @next: Pointeur vers le nœud suivant de la file
+ */
 typedef struct queue_s
 {
-    heap_t *node;
-    struct queue_s *next;
+	heap_t *node;
+	struct queue_s *next;
 } queue_t;
 
+/**
+ * enqueue - Ajoute un nœud à la file
+ * @head: Double pointeur vers la tête de file
+ * @node: Nœud à ajouter
+ */
 static void enqueue(queue_t **head, heap_t *node)
 {
-    queue_t *new = malloc(sizeof(queue_t));
-    queue_t *tmp;
+	queue_t *new = malloc(sizeof(queue_t));
+	queue_t *tmp;
 
-    if (!new)
-        return;
+	if (!new)
+		return;
 
-    new->node = node;
-    new->next = NULL;
+	new->node = node;
+	new->next = NULL;
 
-    if (!*head)
-    {
-        *head = new;
-        return;
-    }
+	if (!*head)
+	{
+		*head = new;
+		return;
+	}
 
-    tmp = *head;
-    while (tmp->next)
-        tmp = tmp->next;
-    tmp->next = new;
+	tmp = *head;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }
 
+/**
+ * dequeue - Retire un nœud de la file
+ * @head: Double pointeur vers la tête de file
+ *
+ * Return: Pointeur vers le nœud extrait ou NULL
+ */
 static heap_t *dequeue(queue_t **head)
 {
-    queue_t *tmp;
-    heap_t *node;
+	queue_t *tmp;
+	heap_t *node;
 
-    if (!head || !*head)
-        return (NULL);
+	if (!head || !*head)
+		return (NULL);
 
-    tmp = *head;
-    node = tmp->node;
-    *head = tmp->next;
-    free(tmp);
+	tmp = *head;
+	node = tmp->node;
+	*head = tmp->next;
+	free(tmp);
 
-    return (node);
+	return (node);
 }
 
+/**
+ * free_queue - Libère toute la file d'attente
+ * @queue: Pointeur vers la file
+ */
 static void free_queue(queue_t *queue)
 {
-    queue_t *tmp;
+	queue_t *tmp;
 
-    while (queue)
-    {
-        tmp = queue;
-        queue = queue->next;
-        free(tmp);
-    }
+	while (queue)
+	{
+		tmp = queue;
+		queue = queue->next;
+		free(tmp);
+	}
 }
 
+/**
+ * find_parent - Trouve le premier parent auquel attacher un enfant
+ * @root: Pointeur vers la racine du heap
+ *
+ * Return: Pointeur vers le parent trouvé ou NULL
+ */
 static heap_t *find_parent(heap_t *root)
 {
-    queue_t *queue = NULL;
-    heap_t *current;
+	queue_t *queue = NULL;
+	heap_t *current;
 
-    enqueue(&queue, root);
+	enqueue(&queue, root);
 
-    while (queue)
-    {
-        current = dequeue(&queue);
+	while (queue)
+	{
+		current = dequeue(&queue);
 
-        if (!current->left || !current->right)
-        {
-            free_queue(queue);
-            return (current);
-        }
+		if (!current->left || !current->right)
+		{
+			free_queue(queue);
+			return (current);
+		}
 
-        enqueue(&queue, current->left);
-        enqueue(&queue, current->right);
-    }
+		enqueue(&queue, current->left);
+		enqueue(&queue, current->right);
+	}
 
-    return (NULL);
+	return (NULL);
 }
 
+/**
+ * heapify_up - Réorganise le tas vers le haut
+ * @node: Pointeur vers le nœud inséré
+ *
+ * Return: Pointeur vers le nœud final après remontée
+ */
 static heap_t *heapify_up(heap_t *node)
 {
-    int tmp;
+	int tmp;
 
-    while (node->parent && node->n > node->parent->n)
-    {
-        tmp = node->n;
-        node->n = node->parent->n;
-        node->parent->n = tmp;
-        node = node->parent;
-    }
+	while (node->parent && node->n > node->parent->n)
+	{
+		tmp = node->n;
+		node->n = node->parent->n;
+		node->parent->n = tmp;
+		node = node->parent;
+	}
 
-    return (node);
+	return (node);
 }
 
+/**
+ * heap_insert - Insère une valeur dans Max Binary Heap
+ * @root: Double pointeur vers la racine du heap
+ * @value: Valeur à stocker dans le nœud
+ *
+ * Return: Pointeur vers le nœud créé ou NULL en cas d'échec
+ */
 heap_t *heap_insert(heap_t **root, int value)
 {
-    heap_t *parent, *new_node;
+	heap_t *parent, *new_node;
 
-    if (!root)
-        return (NULL);
+	if (!root)
+		return (NULL);
 
-    if (!*root)
-    {
-        *root = binary_tree_node(NULL, value);
-        return (*root);
-    }
+	if (!*root)
+	{
+		*root = binary_tree_node(NULL, value);
+		return (*root);
+	}
 
-    parent = find_parent(*root);
-    if (!parent)
-        return (NULL);
+	parent = find_parent(*root);
+	if (!parent)
+		return (NULL);
 
-    new_node = binary_tree_node(parent, value);
-    if (!new_node)
-        return (NULL);
+	new_node = binary_tree_node(parent, value);
+	if (!new_node)
+		return (NULL);
 
-    if (!parent->left)
-        parent->left = new_node;
-    else
-        parent->right = new_node;
+	if (!parent->left)
+		parent->left = new_node;
+	else
+		parent->right = new_node;
 
-    return (heapify_up(new_node));
+	return (heapify_up(new_node));
 }
