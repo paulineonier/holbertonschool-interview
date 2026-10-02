@@ -10,35 +10,35 @@
 static int slide_left(int *line, size_t size)
 {
     size_t i, j;
-    size_t count = 0;
+    size_t pos = 0;
 
     /* Move non-zero values to the left */
     for (i = 0; i < size; i++)
     {
         if (line[i] != 0)
         {
-            line[count] = line[i];
-            count++;
+            line[pos] = line[i];
+            pos++;
         }
     }
 
     /* Fill the rest with zeros */
-    for (i = count; i < size; i++)
+    for (i = pos; i < size; i++)
         line[i] = 0;
 
     /* Merge identical values */
     i = 0;
-    while (i + 1 < count)
+    while (i + 1 < pos)
     {
         if (line[i] == line[i + 1])
         {
             line[i] *= 2;
 
-            for (j = i + 1; j + 1 < count; j++)
+            for (j = i + 1; j + 1 < pos; j++)
                 line[j] = line[j + 1];
 
-            count--;
-            line[count] = 0;
+            pos--;
+            line[pos] = 0;
         }
 
         i++;
@@ -57,49 +57,39 @@ static int slide_left(int *line, size_t size)
 static int slide_right(int *line, size_t size)
 {
     size_t i, j;
-    size_t count = 0;
+    size_t pos = size;
 
-    /* Move non-zero values to the left first */
-    for (i = 0; i < size; i++)
+    /* Move non-zero values to the right */
+    for (i = size; i > 0; i--)
     {
-        if (line[i] != 0)
+        if (line[i - 1] != 0)
         {
-            line[count] = line[i];
-            count++;
+            pos--;
+            line[pos] = line[i - 1];
         }
     }
 
-    /* Fill the rest with zeros */
-    for (i = count; i < size; i++)
+    /* Fill the beginning with zeros */
+    for (i = 0; i < pos; i++)
         line[i] = 0;
 
-    /* Merge from right to left */
-    i = count;
+    /* Merge identical values from right to left */
+    i = size - 1;
 
-    while (i > 1)
+    while (i > pos)
     {
-        if (line[i - 1] == line[i - 2])
+        if (line[i] == line[i - 1])
         {
-            line[i - 1] *= 2;
+            line[i] *= 2;
 
-            for (j = i - 2; j > 0; j--)
+            for (j = i - 1; j > pos; j--)
                 line[j] = line[j - 1];
 
-            line[0] = 0;
-            i--;
+            pos++;
+            line[pos] = 0;
         }
 
         i--;
-    }
-
-    /* Move the result to the right */
-    if (count > 0)
-    {
-        for (i = count; i > 0; i--)
-            line[size - count + i - 1] = line[i - 1];
-
-        for (i = 0; i < size - count; i++)
-            line[i] = 0;
     }
 
     return (1);
