@@ -51,7 +51,7 @@ def main():
         return
 
     # Display remaining statistics when input ends
-    if lines_read % 10 != 0:
+    if lines_read % 10 != 0 or lines_read == 0:
         print_stats(total_size, status_counts)
 
 
