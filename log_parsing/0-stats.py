@@ -1,10 +1,8 @@
-
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Parse logs and print statistics."""
 
 import re
 import sys
-
 
 STATUS_CODES = (200, 301, 400, 401, 403, 404, 405, 500)
 
@@ -31,6 +29,7 @@ def main():
     try:
         for line in sys.stdin:
             lines_read += 1
+
             match = LOG_PATTERN.fullmatch(line.rstrip("\n"))
 
             if match:
