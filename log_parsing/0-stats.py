@@ -1,8 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Parse logs and print statistics."""
 
 import re
 import sys
+
 
 STATUS_CODES = (200, 301, 400, 401, 403, 404, 405, 500)
 
@@ -41,12 +42,19 @@ def main():
                 if status in status_counts:
                     status_counts[status] += 1
 
+            # Display statistics after every 10 lines read
             if lines_read % 10 == 0:
                 print_stats(total_size, status_counts)
 
     except KeyboardInterrupt:
         print_stats(total_size, status_counts)
+        return
+
+    # Display remaining statistics when input ends
+    if lines_read % 10 != 0:
+        print_stats(total_size, status_counts)
 
 
 if __name__ == "__main__":
     main()
+    
