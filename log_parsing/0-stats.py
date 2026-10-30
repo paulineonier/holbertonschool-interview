@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """Parse logs and print statistics."""
 
 import re
@@ -57,4 +57,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
