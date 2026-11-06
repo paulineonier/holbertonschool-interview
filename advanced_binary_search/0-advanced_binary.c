@@ -17,7 +17,17 @@ int recursive_search(int *array, size_t left, size_t right, int value)
 	if (left > right)
 		return (-1);
 
-	/* Print current subarray */
+	/* Base case: single element remaining */
+	if (left == right)
+	{
+		if (array[left] == value)
+			return ((int)left);
+		/* If single element doesn't match, print and return -1 */
+		printf("Searching in array: %d\n", array[left]);
+		return (-1);
+	}
+
+	/* Print current subarray (only when size > 1) */
 	printf("Searching in array: ");
 	for (i = left; i <= right; i++)
 	{
@@ -27,17 +37,9 @@ int recursive_search(int *array, size_t left, size_t right, int value)
 	}
 	printf("\n");
 
-	/* Base case: if single element and it matches */
-	if (left == right && array[left] == value)
-		return ((int)left);
-
-	/* Base case: single element but does not match */
-	if (left == right && array[left] != value)
-		return (-1);
-
 	mid = left + (right - left) / 2;
 
-	/* If mid element is greater or equal, search left half (including mid) */
+	/* If value is at mid or to the left, search left half (including mid) */
 	if (array[mid] >= value)
 		return (recursive_search(array, left, mid, value));
 
